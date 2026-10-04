@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Operator Control Dashboard | Public Transport Information Platform</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+
+  <div class="admin-layout">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar" style="background-color: #1e293b;">
+      <div class="admin-sidebar-header">
+        <i class="fa-solid fa-headset text-warning"></i>
+        <span>Transit Operator</span>
+      </div>
+
+      <nav class="admin-sidebar-nav">
+        <a href="/operator/dashboard.html" class="admin-nav-item active">
+          <i class="fa-solid fa-tower-broadcast"></i> Live Dispatch
+        </a>
+        <a href="/operator/service-status.html" class="admin-nav-item">
+          <i class="fa-solid fa-triangle-exclamation"></i> Broadcast Updates
+        </a>
+        <a href="/schedules.html" class="admin-nav-item">
+          <i class="fa-solid fa-calendar-days"></i> Public Timetables
+        </a>
+        <a href="/service-status.html" class="admin-nav-item">
+          <i class="fa-solid fa-signal"></i> Network Status
+        </a>
+        <a href="/index.html" class="admin-nav-item">
+          <i class="fa-solid fa-globe"></i> View Public Site
+        </a>
+      </nav>
+
+      <div class="p-3 border-top border-secondary border-opacity-25">
+        <button class="btn btn-outline-danger w-100 btn-sm" onclick="logoutUser('/admin/login.html')">
+          <i class="fa-solid fa-arrow-right-from-bracket me-1"></i> Sign Out
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="admin-main-content">
+      <header class="admin-topbar">
+        <div>
+          <h4 class="fw-bold mb-0">Transport Operator Control Center</h4>
+          <small class="text-muted">Real-time corridor management and status broadcasting</small>
+        </div>
+        <div class="d-flex align-items-center gap-3">
+          <span class="badge bg-warning text-dark px-3 py-2" id="operator-user-display">Operator</span>
+        </div>
+      </header>
+
+      <main class="admin-body">
+        <!-- Live Status Broadcast Widget -->
+        <div class="card card-custom p-4 bg-white mb-4 border-start border-4 border-warning" id="operator-status-form-card">
+          <div class="d-flex align-items-center gap-2 mb-3">
+            <div class="feature-icon-wrapper icon-amber mb-0" style="width: 40px; height: 40px; font-size: 1.1rem;"><i class="fa-solid fa-bolt"></i></div>
+            <div>
+              <h5 class="fw-bold mb-0">Broadcast Route Status & Advisory</h5>
+              <small class="text-muted">Update live operational state and auto-publish public service alert</small>
+            </div>
+          </div>
+
+          <form id="operator-status-form">
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label class="form-label small fw-bold text-muted">Select Corridor / Route *</label>
+                <select class="form-select" id="op_route_select" required>
+                  <!-- Populated by operator.js -->
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-bold text-muted">New Operating Status *</label>
+                <select class="form-select fw-bold" id="op_status_select" required>
+                  <option value="ON TIME">ON TIME (Normal Flow)</option>
+                  <option value="DELAYED">DELAYED (10-30 min Traffic/Issue)</option>
+                  <option value="SUSPENDED">SUSPENDED (Service Halted)</option>
+                  <option value="CANCELLED">CANCELLED (Trip Cancelled)</option>
+                  <option value="MAINTENANCE">MAINTENANCE (Depot Work)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row g-3 mb-3">
+              <div class="col-md-8">
+                <label class="form-label small fw-bold text-muted">Optional Alert Headline</label>
+                <input type="text" class="form-control" id="op_alert_title" placeholder="e.g. Route 42B 15-min Delay due to Rain & Waterlogging">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label small fw-bold text-muted">Alert Priority</label>
+                <select class="form-select" id="op_alert_priority">
+                  <option value="LOW">LOW</option>
+                  <option value="MEDIUM" selected>MEDIUM</option>
+                  <option value="HIGH">HIGH</option>
+                  <option value="CRITICAL">CRITICAL</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label small fw-bold text-muted">Passenger Advisory Details</label>
+              <textarea class="form-control" id="op_alert_desc" rows="2" placeholder="Passengers are advised to expect moderate delays near expressway junction..."></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-warning text-dark fw-bold px-4">
+              <i class="fa-solid fa-paper-plane me-1"></i> Update Route & Broadcast
+            </button>
+          </form>
+        </div>
+
+        <!-- Corridors Status Grid -->
+        <div class="card card-custom p-3 bg-white">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="fw-bold mb-0">Assigned Corridors & Active Status</h5>
+            <span class="badge bg-secondary" id="operator-routes-count">Loading...</span>
+          </div>
+
+          <div class="table-responsive">
+            <table class="table table-hover table-custom mb-0">
+              <thead>
+                <tr>
+                  <th>Route</th>
+                  <th>Corridor Name</th>
+                  <th>Endpoints</th>
+                  <th>Current Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="operator-routes-table-body">
+                <!-- Populated by operator.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Bootstrap 5 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- API Client JS -->
+  <script src="/js/api.js"></script>
+  <!-- Operator JS -->
+  <script src="/js/operator.js"></script>
+</body>
+</html>

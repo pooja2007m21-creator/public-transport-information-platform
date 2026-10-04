@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Public Transport Information Platform | Home</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/routes.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top">
+    <div class="container">
+      <a class="navbar-brand" href="/index.html">
+        <i class="fa-solid fa-bus-simple text-info"></i>
+        <span>MetroTransit</span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarMain">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link active" href="/index.html"><i class="fa-solid fa-house me-1"></i> Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="/routes.html"><i class="fa-solid fa-route me-1"></i> Routes</a></li>
+          <li class="nav-item"><a class="nav-link" href="/stops.html"><i class="fa-solid fa-map-pin me-1"></i> Stops</a></li>
+          <li class="nav-item"><a class="nav-link" href="/schedules.html"><i class="fa-solid fa-calendar-days me-1"></i> Schedules</a></li>
+          <li class="nav-item"><a class="nav-link" href="/fares.html"><i class="fa-solid fa-ticket me-1"></i> Fares</a></li>
+          <li class="nav-item"><a class="nav-link" href="/service-status.html"><i class="fa-solid fa-signal me-1"></i> Service Status</a></li>
+          <li class="nav-item"><a class="nav-link" href="/alerts.html"><i class="fa-solid fa-triangle-exclamation me-1"></i> Alerts</a></li>
+        </ul>
+
+        <div class="d-flex align-items-center gap-2" id="navbar-auth-links">
+          <!-- Populated dynamically by api.js -->
+          <a href="/login.html" class="btn btn-outline-light me-2"><i class="fa-solid fa-right-to-bracket me-1"></i> Login</a>
+          <a href="/register.html" class="btn btn-primary-custom"><i class="fa-solid fa-user-plus me-1"></i> Register</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Live Disruption / Alerts Ticker -->
+  <div class="alert-ticker">
+    <div class="container d-flex align-items-center justify-content-between">
+      <div class="d-flex align-items-center gap-2 overflow-hidden text-truncate">
+        <span class="badge bg-danger text-uppercase"><i class="fa-solid fa-bolt me-1"></i> Live Update</span>
+        <span class="text-truncate" id="hero-ticker-text">Route 21A & 7A extra services operating today. Route 18C charging maintenance active.</span>
+      </div>
+      <a href="/service-status.html" class="btn btn-xs btn-outline-info text-nowrap ms-2 py-0 px-2">View Status</a>
+    </div>
+  </div>
+
+  <main>
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="container position-relative" style="z-index: 2;">
+        <div class="row align-items-center g-5">
+          <div class="col-lg-6">
+            <span class="badge bg-primary-subtle text-primary fw-bold px-3 py-2 rounded-pill mb-3">
+              <i class="fa-solid fa-shield-halved me-1"></i> Next-Gen Urban Transit Information
+            </span>
+            <h1 class="hero-title">Public Transport Information, Made Simple</h1>
+            <p class="hero-subtitle">Find routes, stops, schedules, fares, and real-time service updates in one convenient, unified platform.</p>
+            <div class="d-flex flex-wrap gap-3">
+              <a href="/routes.html" class="btn btn-primary-custom btn-lg">
+                <i class="fa-solid fa-magnifying-glass-location me-2"></i> Find a Route
+              </a>
+              <a href="/schedules.html" class="btn btn-outline-light btn-lg">
+                <i class="fa-solid fa-clock me-2"></i> View Schedules
+              </a>
+            </div>
+          </div>
+
+          <!-- Quick Journey Planner Widget -->
+          <div class="col-lg-6">
+            <div class="search-widget-card">
+              <div class="d-flex align-items-center gap-2 mb-3">
+                <div class="feature-icon-wrapper icon-blue mb-0" style="width:40px; height:40px; font-size:1.1rem;"><i class="fa-solid fa-compass"></i></div>
+                <div>
+                  <h4 class="fw-bold mb-0 text-dark">Plan Your Journey</h4>
+                  <small class="text-muted">Direct routes & intermediate stop connections</small>
+                </div>
+              </div>
+
+              <form action="/routes.html" method="GET">
+                <div class="mb-3">
+                  <label class="form-label small fw-bold text-muted text-uppercase">From (Starting Stop)</label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-light"><i class="fa-solid fa-location-dot text-success"></i></span>
+                    <input type="text" class="form-control" name="from" placeholder="e.g. Central Bus Stand or Main Market" required>
+                  </div>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label small fw-bold text-muted text-uppercase">To (Destination)</label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-light"><i class="fa-solid fa-flag-checkered text-danger"></i></span>
+                    <input type="text" class="form-control" name="to" placeholder="e.g. Railway Station or Tech Park" required>
+                  </div>
+                </div>
+
+                <div class="row g-2 mb-3">
+                  <div class="col-6">
+                    <label class="form-label small fw-bold text-muted text-uppercase">Date</label>
+                    <input type="date" class="form-control" name="date" id="home_date">
+                  </div>
+                  <div class="col-6">
+                    <label class="form-label small fw-bold text-muted text-uppercase">Time</label>
+                    <input type="time" class="form-control" name="time" id="home_time">
+                  </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary-custom w-100 py-2 fs-6 fw-bold">
+                  <i class="fa-solid fa-magnifying-glass me-2"></i> Search Matching Routes
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Core Features Section -->
+    <section class="py-5 bg-white">
+      <div class="container py-4">
+        <div class="text-center max-w-700 mx-auto mb-5">
+          <span class="badge bg-light text-primary border fw-bold px-3 py-1 mb-2">COMPLETE TRANSIT SUITE</span>
+          <h2 class="fw-bold">Everything You Need For Daily Commuting</h2>
+          <p class="text-muted">Access accurate, updated transport intelligence designed for passengers, operators, and city planners.</p>
+        </div>
+
+        <div class="row g-4">
+          <!-- Card 1 -->
+          <div class="col-md-6 col-lg-4">
+            <div class="card card-custom card-lift h-100 p-4">
+              <div class="feature-icon-wrapper icon-blue">
+                <i class="fa-solid fa-route"></i>
+              </div>
+              <h5 class="fw-bold mb-2">Find Routes</h5>
+              <p class="text-muted mb-3">Explore comprehensive bus routes, intermediate stop timelines, and route distances across the city.</p>
+              <a href="/routes.html" class="fw-bold text-primary text-decoration-none mt-auto">Explore Routes &rarr;</a>
+            </div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="col-md-6 col-lg-4">
+            <div class="card card-custom card-lift h-100 p-4">
+              <div class="feature-icon-wrapper icon-teal">
+                <i class="fa-solid fa-clock"></i>
+              </div>
+              <h5 class="fw-bold mb-2">Check Schedules</h5>
+              <p class="text-muted mb-3">View departure and arrival timetables, peak hour frequencies, and weekend operating schedules.</p>
+              <a href="/schedules.html" class="fw-bold text-teal text-decoration-none mt-auto">View Timetables &rarr;</a>
+            </div>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="col-md-6 col-lg-4">
+            <div class="card card-custom card-lift h-100 p-4">
+              <div class="feature-icon-wrapper icon-amber">
+                <i class="fa-solid fa-map-location-dot"></i>
+              </div>
+              <h5 class="fw-bold mb-2">Locate Stops</h5>
+              <p class="text-muted mb-3">Discover nearby transit stops, live stop codes, and real-time lists of upcoming buses passing each stop.</p>
+              <a href="/stops.html" class="fw-bold text-warning text-decoration-none mt-auto">Find Nearby Stops &rarr;</a>
+            </div>
+          </div>
+
+          <!-- Card 4 -->
+          <div class="col-md-6 col-lg-4">
+            <div class="card card-custom card-lift h-100 p-4">
+              <div class="feature-icon-wrapper icon-emerald">
+                <i class="fa-solid fa-receipt"></i>
+              </div>
+              <h5 class="fw-bold mb-2">View Fares</h5>
+              <p class="text-muted mb-3">Transparent fare tariffs, student concession discounts, senior citizen passes, and dynamic calculator.</p>
+              <a href="/fares.html" class="fw-bold text-success text-decoration-none mt-auto">Calculate Fares &rarr;</a>
+            </div>
+          </div>
+
+          <!-- Card 5 -->
+          <div class="col-md-6 col-lg-4">
+            <div class="card card-custom card-lift h-100 p-4">
+              <div class="feature-icon-wrapper icon-rose">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+              </div>
+              <h5 class="fw-bold mb-2">Service Alerts</h5>
+              <p class="text-muted mb-3">Stay ahead of maintenance works, diversions, delays, and emergency cancellations instantly.</p>
+              <a href="/alerts.html" class="fw-bold text-danger text-decoration-none mt-auto">Read Alerts &rarr;</a>
+            </div>
+          </div>
+
+          <!-- Card 6 -->
+          <div class="col-md-6 col-lg-4">
+            <div class="card card-custom card-lift h-100 p-4">
+              <div class="feature-icon-wrapper icon-indigo">
+                <i class="fa-solid fa-signal"></i>
+              </div>
+              <h5 class="fw-bold mb-2">Transport Updates</h5>
+              <p class="text-muted mb-3">Track line operational status with ON TIME, DELAYED, and SUSPENDED live indicators.</p>
+              <a href="/service-status.html" class="fw-bold text-indigo text-decoration-none mt-auto">Check Status &rarr;</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="py-5" style="background-color: #f1f5f9;">
+      <div class="container py-4">
+        <div class="text-center max-w-700 mx-auto mb-5">
+          <span class="badge bg-primary text-white fw-bold px-3 py-1 mb-2">EASY 5-STEP JOURNEY</span>
+          <h2 class="fw-bold">How It Works</h2>
+          <p class="text-muted">Planning and executing your city commute has never been this seamless.</p>
+        </div>
+
+        <div class="row g-4 text-center">
+          <div class="col-md">
+            <div class="card card-custom p-4 h-100">
+              <div class="badge bg-primary fs-5 rounded-circle mx-auto mb-3" style="width: 44px; height: 44px; display:flex; align-items:center; justify-content:center;">1</div>
+              <h6 class="fw-bold">Enter Starting Point</h6>
+              <p class="small text-muted mb-0">Type your boarding stop or current neighborhood.</p>
+            </div>
+          </div>
+          <div class="col-md">
+            <div class="card card-custom p-4 h-100">
+              <div class="badge bg-primary fs-5 rounded-circle mx-auto mb-3" style="width: 44px; height: 44px; display:flex; align-items:center; justify-content:center;">2</div>
+              <h6 class="fw-bold">Select Destination</h6>
+              <p class="small text-muted mb-0">Choose your destination stop, mall, or train station.</p>
+            </div>
+          </div>
+          <div class="col-md">
+            <div class="card card-custom p-4 h-100">
+              <div class="badge bg-primary fs-5 rounded-circle mx-auto mb-3" style="width: 44px; height: 44px; display:flex; align-items:center; justify-content:center;">3</div>
+              <h6 class="fw-bold">Find Routes</h6>
+              <p class="small text-muted mb-0">Browse direct matching routes and connection options.</p>
+            </div>
+          </div>
+          <div class="col-md">
+            <div class="card card-custom p-4 h-100">
+              <div class="badge bg-primary fs-5 rounded-circle mx-auto mb-3" style="width: 44px; height: 44px; display:flex; align-items:center; justify-content:center;">4</div>
+              <h6 class="fw-bold">Check Schedule & Fare</h6>
+              <p class="small text-muted mb-0">Review departure times, ticket pricing, and status.</p>
+            </div>
+          </div>
+          <div class="col-md">
+            <div class="card card-custom p-4 h-100">
+              <div class="badge bg-success fs-5 rounded-circle mx-auto mb-3" style="width: 44px; height: 44px; display:flex; align-items:center; justify-content:center;">5</div>
+              <h6 class="fw-bold">Plan Your Journey</h6>
+              <p class="small text-muted mb-0">Save route to favorites and travel with complete peace of mind.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Role Portals Callout -->
+    <section class="py-5 bg-white border-top">
+      <div class="container py-2">
+        <div class="row align-items-center g-4">
+          <div class="col-lg-4">
+            <div class="p-4 rounded border bg-light">
+              <div class="d-flex align-items-center gap-3 mb-2">
+                <i class="fa-solid fa-user-check text-primary fs-3"></i>
+                <h5 class="fw-bold mb-0">Passengers</h5>
+              </div>
+              <p class="text-muted small mb-3">Register for personal dashboard, favorite routes, saved stops, and journey history tracking.</p>
+              <a href="/register.html" class="btn btn-sm btn-outline-primary">Passenger Sign Up</a>
+            </div>
+          </div>
+
+          <div class="col-lg-4">
+            <div class="p-4 rounded border bg-light">
+              <div class="d-flex align-items-center gap-3 mb-2">
+                <i class="fa-solid fa-headset text-warning fs-3"></i>
+                <h5 class="fw-bold mb-0">Transport Operators</h5>
+              </div>
+              <p class="text-muted small mb-3">Manage corridor services, broadcast delay advisories, and report incident cancellations in real-time.</p>
+              <a href="/admin/login.html" class="btn btn-sm btn-outline-warning text-dark">Operator Portal</a>
+            </div>
+          </div>
+
+          <div class="col-lg-4">
+            <div class="p-4 rounded border bg-light">
+              <div class="d-flex align-items-center gap-3 mb-2">
+                <i class="fa-solid fa-sliders text-danger fs-3"></i>
+                <h5 class="fw-bold mb-0">Administrators</h5>
+              </div>
+              <p class="text-muted small mb-3">Complete CRUD control over transit routes, stops, schedules, fares, users, and platform analytics.</p>
+              <a href="/admin/login.html" class="btn btn-sm btn-outline-danger">Admin Dashboard</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer-custom">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-lg-4">
+          <h5 class="d-flex align-items-center gap-2">
+            <i class="fa-solid fa-bus-simple text-info"></i> MetroTransit Platform
+          </h5>
+          <p class="small text-muted">
+            The Public Transport Information Platform is dedicated to providing real-time, accurate transit schedules, routes, stops, fares, and operational alerts for urban passengers.
+          </p>
+        </div>
+
+        <div class="col-6 col-lg-2">
+          <h5>Quick Links</h5>
+          <ul class="list-unstyled small">
+            <li class="mb-2"><a href="/routes.html">Browse Routes</a></li>
+            <li class="mb-2"><a href="/stops.html">Bus Stops</a></li>
+            <li class="mb-2"><a href="/schedules.html">Timetables</a></li>
+            <li class="mb-2"><a href="/fares.html">Fare Calculator</a></li>
+          </ul>
+        </div>
+
+        <div class="col-6 col-lg-2">
+          <h5>Information</h5>
+          <ul class="list-unstyled small">
+            <li class="mb-2"><a href="/service-status.html">Service Status</a></li>
+            <li class="mb-2"><a href="/alerts.html">Disruption Alerts</a></li>
+            <li class="mb-2"><a href="/login.html">Passenger Login</a></li>
+            <li class="mb-2"><a href="/register.html">User Registration</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-4">
+          <h5>Staff & Administration</h5>
+          <p class="small text-muted">Restricted access portal for authorized transit operators and system administrators.</p>
+          <a href="/admin/login.html" class="btn btn-sm btn-outline-light"><i class="fa-solid fa-lock me-1"></i> Staff / Admin Login</a>
+        </div>
+      </div>
+
+      <div class="footer-bottom d-flex flex-wrap justify-content-between align-items-center">
+        <div>&copy; 2026 Public Transport Information Platform. All rights reserved.</div>
+        <div class="d-flex gap-3">
+          <a href="/docs" target="_blank"><i class="fa-solid fa-book-open me-1"></i> API Docs</a>
+          <span>|</span>
+          <span>Web Technology Project</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap 5 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- API Client JS -->
+  <script src="/js/api.js"></script>
+</body>
+</html>

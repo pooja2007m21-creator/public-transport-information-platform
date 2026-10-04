@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bus Stops & Stations | Public Transport Information Platform</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top">
+    <div class="container">
+      <a class="navbar-brand" href="/index.html">
+        <i class="fa-solid fa-bus-simple text-info"></i>
+        <span>MetroTransit</span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarMain">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link" href="/index.html"><i class="fa-solid fa-house me-1"></i> Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="/routes.html"><i class="fa-solid fa-route me-1"></i> Routes</a></li>
+          <li class="nav-item"><a class="nav-link active" href="/stops.html"><i class="fa-solid fa-map-pin me-1"></i> Stops</a></li>
+          <li class="nav-item"><a class="nav-link" href="/schedules.html"><i class="fa-solid fa-calendar-days me-1"></i> Schedules</a></li>
+          <li class="nav-item"><a class="nav-link" href="/fares.html"><i class="fa-solid fa-ticket me-1"></i> Fares</a></li>
+          <li class="nav-item"><a class="nav-link" href="/service-status.html"><i class="fa-solid fa-signal me-1"></i> Service Status</a></li>
+        </ul>
+
+        <div class="d-flex align-items-center gap-2" id="navbar-auth-links"></div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="py-4">
+    <div class="container">
+      <!-- Section Header -->
+      <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+        <div>
+          <h2 class="fw-bold mb-1">Transit Stops & Terminals</h2>
+          <p class="text-muted mb-0">Discover bus stop locations, upcoming bus arrivals, and connecting lines.</p>
+        </div>
+        <div>
+          <span class="badge bg-teal text-white fs-6 px-3 py-2" id="stops-count-badge" style="background-color: var(--secondary);">Loading...</span>
+        </div>
+      </div>
+
+      <!-- Search & Map Row -->
+      <div class="row g-4 mb-4">
+        <div class="col-lg-5">
+          <!-- Search Box -->
+          <div class="card card-custom p-3 bg-white mb-3">
+            <label class="form-label small fw-bold text-muted text-uppercase">Search Bus Stops</label>
+            <div class="input-group">
+              <span class="input-group-text bg-light"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
+              <input type="text" class="form-control" id="stops_search_input" placeholder="Search by stop name, stop code, or area...">
+            </div>
+          </div>
+
+          <!-- Stops Grid -->
+          <div class="row" id="stops-list-container" style="max-height: 520px; overflow-y: auto;">
+            <!-- Populated by stops.js -->
+          </div>
+        </div>
+
+        <!-- Leaflet Map Column -->
+        <div class="col-lg-7">
+          <div class="card card-custom p-3 bg-white h-100">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h5 class="fw-bold mb-0"><i class="fa-solid fa-map-location-dot text-teal me-2"></i> City Transit Stops Map</h5>
+              <small class="text-muted">Click any marker to view upcoming buses</small>
+            </div>
+            <div id="all-stops-map" class="leaflet-map-container" style="height: 500px;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Stop Details Modal -->
+  <div class="modal fade" id="stopDetailModal" tabindex="-1" aria-labelledby="stopDetailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-dark text-white">
+          <div>
+            <h5 class="modal-title fw-bold" id="modal-stop-name">Stop Details</h5>
+            <small class="text-light opacity-75">Code: <span id="modal-stop-code">--</span> | Area: <span id="modal-stop-area">--</span></small>
+          </div>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <!-- Passing Routes -->
+          <div class="mb-4">
+            <h6 class="fw-bold text-dark mb-2"><i class="fa-solid fa-route text-primary me-2"></i> Passing Routes</h6>
+            <div class="d-flex flex-wrap gap-2" id="modal-stop-routes">
+              <!-- Injected by stops.js -->
+            </div>
+          </div>
+
+          <!-- Upcoming Buses Table -->
+          <div>
+            <h6 class="fw-bold text-dark mb-2"><i class="fa-solid fa-clock text-success me-2"></i> Upcoming Scheduled Buses</h6>
+            <div class="table-responsive">
+              <table class="table table-sm table-custom mb-0">
+                <thead>
+                  <tr>
+                    <th>Route</th>
+                    <th>Departure Time</th>
+                    <th>Frequency</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="modal-stop-upcoming-buses">
+                  <!-- Injected by stops.js -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer-custom mt-5">
+    <div class="container text-center small text-muted">
+      <div>&copy; 2026 Public Transport Information Platform. Stop Directory.</div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap 5 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <!-- API Client JS -->
+  <script src="/js/api.js"></script>
+  <!-- Stops JS -->
+  <script src="/js/stops.js"></script>
+</body>
+</html>

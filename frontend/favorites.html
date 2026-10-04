@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Saved Favorites | Public Transport Information Platform</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/routes.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top">
+    <div class="container">
+      <a class="navbar-brand" href="/index.html">
+        <i class="fa-solid fa-bus-simple text-info"></i>
+        <span>MetroTransit</span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarMain">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link" href="/dashboard.html"><i class="fa-solid fa-gauge me-1"></i> Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link" href="/routes.html"><i class="fa-solid fa-route me-1"></i> Routes</a></li>
+          <li class="nav-item"><a class="nav-link" href="/stops.html"><i class="fa-solid fa-map-pin me-1"></i> Stops</a></li>
+          <li class="nav-item"><a class="nav-link" href="/schedules.html"><i class="fa-solid fa-calendar-days me-1"></i> Schedules</a></li>
+          <li class="nav-item"><a class="nav-link active" href="/favorites.html"><i class="fa-solid fa-heart me-1"></i> Favorites</a></li>
+        </ul>
+
+        <div class="d-flex align-items-center gap-2" id="navbar-auth-links"></div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="py-4">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <h2 class="fw-bold mb-1">Your Saved Favorites</h2>
+          <p class="text-muted mb-0">Quick bookmarks for your frequent transit lines and regular bus stops.</p>
+        </div>
+        <div>
+          <a href="/routes.html" class="btn btn-primary-custom">
+            <i class="fa-solid fa-plus me-1"></i> Add More Routes
+          </a>
+        </div>
+      </div>
+
+      <!-- Favorites Grid -->
+      <div class="row g-4">
+        <div class="col-lg-6">
+          <div class="card card-custom p-4 bg-white h-100">
+            <h5 class="fw-bold mb-3"><i class="fa-solid fa-route text-primary me-2"></i> Favorite Routes</h5>
+            <div id="fav-routes-container">
+              <!-- Loaded dynamically via js -->
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-6">
+          <div class="card card-custom p-4 bg-white h-100">
+            <h5 class="fw-bold mb-3"><i class="fa-solid fa-map-pin text-teal me-2"></i> Saved Bus Stops</h5>
+            <div id="fav-stops-container">
+              <!-- Loaded dynamically via js -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer-custom mt-5">
+    <div class="container text-center small text-muted">
+      <div>&copy; 2026 Public Transport Information Platform. Favorites.</div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap 5 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- API Client JS -->
+  <script src="/js/api.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      if (!isAuthenticated()) {
+        window.location.href = "/login.html";
+        return;
+      }
+      await loadUserFavorites();
+    });
+
+    async function loadUserFavorites() {
+      showLoading();
+      try {
+        const favs = await apiRequest("/api/favorites");
+        const routesContainer = document.getElementById("fav-routes-container");
+        const stopsContainer = document.getElementById("fav-stops-container");
+
+        const routeFavs = favs.filter(f => f.favorite_type === "ROUTE");
+        const stopFavs = favs.filter(f => f.favorite_type === "STOP");
+
+        if (routesContainer) {
+          if (routeFavs.length === 0) {
+            routesContainer.innerHTML = `<div class="p-4 text-center text-muted">No favorite routes saved. <a href="/routes.html">Browse Routes</a></div>`;
+          } else {
+            routesContainer.innerHTML = routeFavs.map(f => {
+              const r = f.route;
+              if (!r) return '';
+              return `
+                <div class="border rounded p-3 mb-3 d-flex justify-content-between align-items-center">
+                  <div class="d-flex align-items-center gap-3">
+                    <span class="route-number-badge fs-6 py-1 px-2">${r.route_number}</span>
+                    <div>
+                      <h6 class="fw-bold mb-0">${r.route_name}</h6>
+                      <small class="text-muted">${r.start_point} &rarr; ${r.destination} | ₹${r.fare}</small>
+                    </div>
+                  </div>
+                  <div class="d-flex gap-2">
+                    <a href="/route-details.html?id=${r.id}" class="btn btn-sm btn-outline-primary">View</a>
+                    <button class="btn btn-sm btn-outline-danger" onclick="deleteFavItem(${f.id})"><i class="fa-solid fa-trash"></i></button>
+                  </div>
+                </div>
+              `;
+            }).join("");
+          }
+        }
+
+        if (stopsContainer) {
+          if (stopFavs.length === 0) {
+            stopsContainer.innerHTML = `<div class="p-4 text-center text-muted">No saved stops. <a href="/stops.html">Browse Stops</a></div>`;
+          } else {
+            stopsContainer.innerHTML = stopFavs.map(f => {
+              const s = f.stop;
+              if (!s) return '';
+              return `
+                <div class="border rounded p-3 mb-3 d-flex justify-content-between align-items-center">
+                  <div class="d-flex align-items-center gap-3">
+                    <div class="feature-icon-wrapper icon-teal mb-0" style="width:38px; height:38px; font-size:1rem;"><i class="fa-solid fa-map-pin"></i></div>
+                    <div>
+                      <h6 class="fw-bold mb-0">${s.stop_name}</h6>
+                      <small class="text-muted">Code: ${s.stop_code} | Area: ${s.area || 'Metro'}</small>
+                    </div>
+                  </div>
+                  <div class="d-flex gap-2">
+                    <a href="/stops.html" class="btn btn-sm btn-outline-teal">Schedule</a>
+                    <button class="btn btn-sm btn-outline-danger" onclick="deleteFavItem(${f.id})"><i class="fa-solid fa-trash"></i></button>
+                  </div>
+                </div>
+              `;
+            }).join("");
+          }
+        }
+
+      } catch (err) {
+        showToast(err.message, "error");
+      } finally {
+        hideLoading();
+      }
+    }
+
+    async function deleteFavItem(id) {
+      if (!confirm("Remove this item from your favorites?")) return;
+      try {
+        await apiRequest(`/api/favorites/${id}`, { method: "DELETE" });
+        showToast("Removed from favorites.", "info");
+        await loadUserFavorites();
+      } catch (err) {
+        showToast(err.message, "error");
+      }
+    }
+  </script>
+</body>
+</html>

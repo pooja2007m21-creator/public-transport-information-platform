@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Service Alerts & Disruptions | Public Transport Information Platform</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top">
+    <div class="container">
+      <a class="navbar-brand" href="/index.html">
+        <i class="fa-solid fa-bus-simple text-info"></i>
+        <span>MetroTransit</span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarMain">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link" href="/index.html"><i class="fa-solid fa-house me-1"></i> Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="/routes.html"><i class="fa-solid fa-route me-1"></i> Routes</a></li>
+          <li class="nav-item"><a class="nav-link" href="/stops.html"><i class="fa-solid fa-map-pin me-1"></i> Stops</a></li>
+          <li class="nav-item"><a class="nav-link" href="/schedules.html"><i class="fa-solid fa-calendar-days me-1"></i> Schedules</a></li>
+          <li class="nav-item"><a class="nav-link" href="/fares.html"><i class="fa-solid fa-ticket me-1"></i> Fares</a></li>
+          <li class="nav-item"><a class="nav-link" href="/service-status.html"><i class="fa-solid fa-signal me-1"></i> Service Status</a></li>
+          <li class="nav-item"><a class="nav-link active" href="/alerts.html"><i class="fa-solid fa-triangle-exclamation me-1"></i> Alerts</a></li>
+        </ul>
+
+        <div class="d-flex align-items-center gap-2" id="navbar-auth-links"></div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="py-4">
+    <div class="container">
+      <!-- Section Header -->
+      <div class="mb-4">
+        <h2 class="fw-bold mb-1">Transit Service Alerts & Incident Bulletins</h2>
+        <p class="text-muted mb-0">Live maintenance bulletins, detour notices, emergency weather advisories, and route changes.</p>
+      </div>
+
+      <!-- Filter Controls -->
+      <div class="card card-custom p-3 bg-white mb-4">
+        <div class="row g-3">
+          <div class="col-md-4">
+            <label class="form-label small fw-bold text-muted text-uppercase">Priority Level</label>
+            <select class="form-select" id="alert_filter_priority">
+              <option value="ALL">All Priorities</option>
+              <option value="CRITICAL">Critical (High Severity)</option>
+              <option value="HIGH">High</option>
+              <option value="MEDIUM">Medium</option>
+              <option value="LOW">Low (Informational)</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label small fw-bold text-muted text-uppercase">Status</label>
+            <select class="form-select" id="alert_filter_status">
+              <option value="ALL">All Statuses</option>
+              <option value="ACTIVE" selected>Active Only</option>
+              <option value="RESOLVED">Resolved</option>
+              <option value="EXPIRED">Expired</option>
+            </select>
+          </div>
+          <div class="col-md-5">
+            <label class="form-label small fw-bold text-muted text-uppercase">Search Keyword</label>
+            <div class="input-group">
+              <span class="input-group-text bg-light"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
+              <input type="text" class="form-control" id="alert_search_input" placeholder="Search route, road name, or disruption type...">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feed Container -->
+      <div id="alerts-feed-container">
+        <!-- Populated by alerts.js -->
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer-custom mt-5">
+    <div class="container text-center small text-muted">
+      <div>&copy; 2026 Public Transport Information Platform. Alerts Bulletin.</div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap 5 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- API Client JS -->
+  <script src="/js/api.js"></script>
+  <!-- Alerts JS -->
+  <script src="/js/alerts.js"></script>
+</body>
+</html>
